@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: docker.arvancloud.ir/prom/prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+
+  node-exporter:
+    image: docker.arvancloud.ir/prom/node-exporter
+    ports:
+      - "9100:9100"
+
+  redis_exporter:
+    image: docker.arvancloud.ir/oliver006/redis_exporter:latest
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis://:copper_mess_pwd_123_123_123@185.88.154.199:30001
+    restart: unless-stopped
+
+  rabbitmq_exporter:
+    image: docker.arvancloud.ir/kbudde/rabbitmq-exporter
+    ports:
+      - "9419:9419"
+    environment:
+      - RABBIT_URL=http://guest:guest@185.88.154.199:15671
+    restart: unless-stopped
+
+
+  mongodb_exporter:
+    image: public.ecr.aws/bitnami/mongodb-exporter:0.40.0
+    environment:
+        #- MONGODB_URI=mongodb://admin:85_admin_85@185.88.154.199:40022
+        - MONGODB_URI=mongodb://admin:85_admin_85@185.88.154.199:40022/admin?authSource=admin
+    command:
+      - --log.level=debug
+      - --collector.dbstats
+      - --collector.collstats
+      - --collector.topmetrics
+      - --collector.indexstats
+      - --collector.diagnosticdata
+      - --collector.replicasetstatus
+      - --collector.currentopmetrics
+      - --compatible-mode
+      - --discovering-mode
+    ports:
+      - "9216:9216"
+    restart: unless-stopped
+
+    #postgres_exporter:
+    #image: prometheuscommunity/postgres-exporter
+    #environment:
+    #  - DATA_SOURCE_NAME=postgresql://postgres:mysecretpassword@postgres:5432/postgres?sslmode=disable
+    #ports:
+    #  - "9187:9187"
+    #networks:
+    #  - monitor-net
+    #depends_on:
+    #  - postgres
+    #restart: unless-stopped
+
+  grafana:
+    image: docker.arvancloud.ir/grafana/grafana
+    ports:
+      - "8585:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage:
