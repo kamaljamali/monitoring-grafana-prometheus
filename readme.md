@@ -57,9 +57,9 @@ Exports RabbitMQ metrics.
 ### 🔹 Custom LoopBack App
 Monitored via custom metrics endpoint.
 
-- **Metrics Path**: `/api/v1/reservation-service/metrics`
+- **Metrics Path**: `/your/api/version/your-service/metrics`
 - **Scheme**: `https`
-- **Target**: `metop.ir`
+- **Target**: `youdomain.domain or your Ip`
 - **Grafana Dashboard**: Custom (user-defined)
 
 ---
@@ -68,5 +68,7 @@ Monitored via custom metrics endpoint.
 
 1. **Clone the repository**
    ```bash
-   git clone https://your-repo-url.git
-   cd your-repo
+   git clone https://github.com/kamaljamali/monitoring-grafana-prometheus
+   cd monitoring-grafana-prometheus
+   run ./deploy.sh
+   
